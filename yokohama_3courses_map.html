@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>横浜ウォーキング・3コースルートマップ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        #map { height: 100vh; width: 100%; z-index: 0; }
+        .control-panel { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 420px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); padding: 16px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); z-index: 1000; }
+        .btn-toggle { padding: 8px 0; border-radius: 10px; font-weight: bold; font-size: 13px; transition: all 0.2s; flex: 1; text-align: center; }
+        .active-10 { background: #10b981; color: white; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.4); }
+        .active-20 { background: #2563eb; color: white; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.4); }
+        .active-30 { background: #ef4444; color: white; box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.4); }
+        .inactive { background: #f1f5f9; color: #64748b; }
+    </style>
+</head>
+<body class="bg-gray-100 m-0 overflow-hidden">
+    <div id="map"></div>
+    
+    <div class="control-panel">
+        <div class="flex justify-between items-center mb-4">
+            <h1 class="text-lg font-black text-slate-800 tracking-tight">横浜ウォーキング</h1>
+            <div class="bg-slate-100 p-1 rounded-xl flex gap-1 w-56">
+                <button id="b10" onclick="setRoute('10')" class="btn-toggle active-10">10km</button>
+                <button id="b20" onclick="setRoute('20')" class="btn-toggle inactive">20km</button>
+                <button id="b30" onclick="setRoute('30')" class="btn-toggle inactive">30km</button>
+            </div>
+        </div>
+        <div class="flex justify-between items-end border-t pt-3 border-slate-100">
+            <div>
+                <div id="l-name" class="text-xs font-bold text-emerald-600 uppercase">10km Course</div>
+                <div id="l-dist" class="text-3xl font-black text-slate-800 tracking-tight leading-none mt-1">8.5 km</div>
+            </div>
+            <div class="text-right">
+                <div class="text-[10px] text-slate-400 font-bold uppercase mb-0.5">EST. TIME</div>
+                <div id="l-time" class="text-sm font-bold text-slate-600">約2時間3分</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const data = {
+            "10": { 
+                poly: "w}lwE{afsY?e@Ea@WsCGSSmB?UIk@IoAIwBCgC@_C?sBC}@l@OjAa@l@Yp@a@PGPMr@i@HCPQfDeCd@c@~@o@RKZYzBcBpAcAn@e@xAoAlAoAtAyBZi@JWzA}C|AeDXo@LYRYZm@Zi@Tc@JMp@s@p@i@z@g@n@Yp@OdB[TArAOl@Ej@Iz@IrAQx@QXMHERUf@[PIVEH?l@FLa@FKk@e@GEbA}Bz@yByB_BCE?ML]AGOK}@q@CMDIa@Yq@g@CIMAMKQS_@]wAeASMUGWGAG?K@G@EMILJBEFELALPZb@TNXJXN`@^X\\?FIPHHLJL@BHp@f@`@XEH@F@Dh@^b@^?HCHGN?L~@t@|@n@Qf@VNVTHXBVI|@`@XRL[x@IRk@rA]l@Yt@s@jB_@bAo@bBq@nBEBCRoAbDKPCLUn@a@z@Md@Yr@d@\\r@f@n@h@~@n@JJCHOb@U|@GLYv@LNR`@H^?V?~ABlDBjE@dA@FXVDHTLRL\\Vh@f@RNj@f@d@h@^j@hBdAv@b@IT[dAIV\\Zf@d@TR\\b@j@x@^l@DRPNx@tA`A|ANVDBABUl@Un@KZIXTHd@VRNYzA@N?NANCBe@ZT`@TBHV\\Pb@T@@OH?d@?BQFEH@JJp@DC?FHDDPFBJHZXj@j@^^DFLVRz@RrAFXYPKLDFDRZzA@FL?^B^YTQFQBIREPAB?@FVrAWsAAGC?Q@M@GFEPIJ]VQL_@CYCMk@SaAKImAWUKu@g@EMk@Hc@Jc@CeASY@I@g@Lk@Dq@?UBSD[Pe@Ze@Zm@b@UPI?EFYXUXGHCBIIW]WW{@o@WI[@c@EIGIUQk@_@u@q@{AQ[a@k@IU?EMFYJuBv@oBp@_@HwBNmAHiAJyAEi@EgDiAi@OgAI]Fm@ZuAt@]_Ay@mBOSEQA]MUIUEDSLoBzAiClBKWKQQ?KFWNCIMKCAEA{@d@{Aj@G@GMGSMHM_@AGES?[Fa@BWSC?{@Ec@Ce@WkCk@A?WM_@A]a@cE", 
+                dist: "8.5 km", 
+                time: "約2時間3分",
+                color: "#10b981", // Emerald Green
+                name: "10km Course"
+            },
+            "20": { 
+                poly: "w}lwE{afsYEgAs@uGSqCM_GAqHfDkAtAw@nA_AfDeCxB_BvC}B`CiBxAoAlAoAtAyBbC_F|AeDrB{D`@q@p@s@lBqA`Bi@nEm@tCYlCc@XM\\[x@e@VEv@FLa@FKk@e@GEbA}Bz@yByB_BCSL]QS}@q@CMDIBSqAeAY_@u@s@eAi@a@]_@g@SFQEPDTG\\f@`@\\f@PrAjAX^t@n@ZTGNp@f@jDhCl@b@f@PRAFXB^Ib@q@dBNRpE`Df@Z~AhAlCjBpBxANFELd@ZbAt@Sh@FHHLBJVn@?X@TBXRr@^bApDbCLRKjA]|@kBfDKNRVB@NRb@|@T\\Ub@rAnBtCrE`CxDDHED^l@`@p@HL\\`AjBvG|BbHl@dB~@fCzBdGnEvMnAbDVx@Z|@XPHJFN^`@VTVDd@Xv@jB`AnCvA`I|BfMd@lCVd@nAnATRa@|@o@tADDKP]t@f@h@RTLJ?NHJBPY^v@v@PZ?f@GLUTHPFRARTf@f@p@vBdDv@jAGFJNz@rAlAlBrArBd@t@vAtB|B|DPZFZBN|@n@b@d@b@~@jBrGh@nCnBpFdAdDBLg@XRv@t@lCLp@\\lAZ`@n@`@h@RPf@h@fANPpAL~@Gj@RXJr@\\t@^`Ab@|@f@LNLVDH]rACTAD@LJBEh@Gf@AFRXX\\JNqAVy@LI?_@IOE[f@MRUPcARcBTmBL_AHKDUMc@Si@IyDg@wIkAYI_@YaC}BY_@uAeDw@oBmAXk@Ak@Nw@`@QLw@aAKGg@MW]Io@G]GAGBe@Jc@Nq@F{@Fm@NMXyAjAeCv@kAl@[VOOgBbC[d@}@hDYz@Wd@y@x@qAb@qEHoDG}KCiD_@k@EYbASj@M\\YAaAw@{@q@u@m@eDgC{GiF}@s@Y]o@OcAq@_BoAc@]USmCuBeAu@wAmAuA_AyAgAmDqCgCkBu@s@IAOHE?NAT_@_@g@a@[i@k@{C}CaAaA}@}@o@y@k@k@iBiBcBiBcFiBsPcG}@[c@WeAo@wCwBmJmHy@u@wAeA{AmA{BaCw@u@}D}Bo@]oAw@w@o@}@oAOWe@b@_@aA]_AIm@?k@OEW}@_@_C}@uGUkCIwDQ}BWqC]mCk@wFQ}DYeIBaAeAq@_@]mAkAkCyBmG{FgGqFaDqCe@TcAVGFHv@Iw@FGbAWd@UlAo@z@W`@A`@MxDaB|CkBv@{A|@r@RQFIVYFFd@^tB|B|@p@x@z@`C~BZV|@|@hA`A^RvD~Cn@^h@\\Mq@^KVtAf@P\\LpAXfAVjIbBvAXfAN`Cl@lB`@tBVfE@dA??G]yDE_@", 
+                dist: "18.9 km", 
+                time: "約4時間26分",
+                color: "#2563eb", // Blue
+                name: "20km Course"
+            },
+            "30": { 
+                poly: "w}lwE{afsYmAoNOqP|FcChOcLzEyDbDiEtIaQrAeBlBqA`Bi@nEm@bH}@pBoAnA@La@c@q@vB}F}BsBL]QSaA_AH]qAeAoAsAeAi@aAeASFQEPDTG\\f@hAn@rAjAnAnARd@p@f@jDhCtAt@ZVB^Ib@q@dBNRpE`Df@Z~AhAlCjBzBnBd@ZbAt@Sh@FHHLZtAXbB^bA~DvCi@hCkBfDJh@NRb@|@T\\Ub@rAnBtCrE`DvFhA`CjBvG|BbHhFrNnEvMnAbDVx@~@zAf@p@tAt@xBzFvA`I|BfM|@rDnAnATRa@|@o@tAc@lAz@~@Vf@Up@hArA?f@St@ZnAf@p@vBdDz@bBhC`ExBhDtErHXv@`A~@fAdBtCbLnBpFdAdDc@f@Rv@t@lCLp@x@nBn@`@h@RPf@h@fA`B^~@GdA^hB|@~BjALNLVW|AEZFz@In@RXX\\JNqAVy@LI?_@Ik@`@c@d@cARcBTmBLaB@mA]qOsBy@c@{C}CuAeDw@oBmAXwALw@`@QLw@aAKGg@Ma@mAW[iAZmBNm@NMXyAjAeCv@kAl@[VOOgBbC[d@}@hDq@`By@x@qAb@aK@}KCiD_@k@EYbAi@vAGl@YXQrA]rCKPo@Oo@Ca@FSnA_@dAaArEgBfE}@dGOhA]ASr@_@j@g@bAy@JkBIiArBgBXiB\\B\\cAH}@ZIZcAPiBWs@UaBw@{Hk@cAEa@FHf@\\zBPj@^nAQTu@Da@Cy@GPx@Hn@]a@YUKj@_@PeAKoBbAq@n@i@Lo@w@{B{Dg@qBUu@]@Ck@O_A_CY}CW]M[UkAI}BQi@k@g@mBq@cDi@[UBu@Xq@q@}@mB{@mC{@}BiAf@YKkAu@iAaAqAi@aEpC{@f@yBc@}@pCuBtAyEtC}Ab@s@VQz@IlAgAF][o@_@_CCaAa@Gk@AKO?Ql@gAZcBL]e@Go@_@qHOq@?aACsDCTqAz@C`C}@\\UFKn@Dn@?j@?k@U}BB}A@g@MBsCq@YSNy@N_A`@{ACYMCMQq@j@_@Za@PCSYg@MSIS[k@]gAIwANgAn@mCf@sCOgAE_C]cBcDwDkCiECiCBe@u@}@u@G_@BSOCUjAQr@Ql@e@IQSqAGiAAyDA}IBq_@Cc@^E@kF?eIUiSK_JTqEtEeM`AaC\\gCEwL]kBp@wBkAeBeCiDa@c@?[ESUm@Ra@Nq@Uy@SiCpBu@nBaAz@GzHqD|@i@v@{A|@r@RQFI^Qd@^tB|B|@p@zDzDzJjIn@^h@\\Mq@^KVtAf@P\\LpAXlIdB|Cn@dJlBbCLjCAdAG]yDE_@", 
+                dist: "23.1 km", 
+                time: "約5時間30分",
+                color: "#ef4444", // Red
+                name: "30km Course"
+            }
+        };
+
+        function decode(encoded) {
+            var points = [], index = 0, len = encoded.length, lat = 0, lng = 0;
+            while (index < len) {
+                var b, shift = 0, result = 0;
+                do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+                var dlat = ((result & 1) ? ~(result >> 1) : (result >> 1)); lat += dlat;
+                shift = 0; result = 0;
+                do { b = encoded.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+                var dlng = ((result & 1) ? ~(result >> 1) : (result >> 1)); lng += dlng;
+                points.push([lat / 1E5, lng / 1E5]);
+            }
+            return points;
+        }
+
+        let map, currentLayer;
+        
+        function init() {
+            map = L.map('map', { zoomControl: false }).setView([35.455, 139.63], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap'
+            }).addTo(map);
+            setRoute('10');
+        }
+
+        function setRoute(id) {
+            if (currentLayer) map.removeLayer(currentLayer);
+            
+            const d = data[id];
+            const coords = decode(d.poly);
+            
+            currentLayer = L.polyline(coords, { color: d.color, weight: 6, opacity: 0.9 }).addTo(map);
+            map.fitBounds(currentLayer.getBounds(), { padding: [80, 80] });
+
+            document.getElementById('l-dist').innerText = d.dist;
+            document.getElementById('l-time').innerText = d.time;
+            document.getElementById('l-name').innerText = d.name;
+            document.getElementById('l-name').className = `text-xs font-bold uppercase ${id==='10'?'text-emerald-600':(id==='20'?'text-blue-600':'text-red-600')}`;
+            
+            ['10','20','30'].forEach(k => {
+                const btn = document.getElementById('b'+k);
+                if (k === id) {
+                    btn.className = `btn-toggle active-${k}`;
+                } else {
+                    btn.className = 'btn-toggle inactive';
+                }
+            });
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
