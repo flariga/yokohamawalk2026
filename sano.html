@@ -17,12 +17,23 @@
         .control-panel { 
             position: absolute; top: 12px; right: 12px; 
             background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(4px);
-            padding: 4px; border-radius: 12px; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
-            z-index: 1000; width: auto; display: flex; flex-direction: column; gap: 4px;
+            padding: 8px; border-radius: 12px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+            z-index: 1000; width: auto; display: flex; flex-direction: column; gap: 6px;
         }
+        
+        /* Map Switcher Style */
+        .map-switch {
+            display: flex; background: #e2e8f0; border-radius: 8px; padding: 2px; margin-bottom: 4px;
+        }
+        .switch-opt {
+            flex: 1; text-align: center; padding: 4px 8px; font-size: 10px; font-weight: bold; cursor: pointer; border-radius: 6px; transition: all 0.2s;
+        }
+        .switch-active { background: white; color: #1e293b; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .switch-inactive { color: #64748b; }
+
         .btn-toggle { 
-            display: block; width: 60px; padding: 6px 0; border-radius: 8px; font-weight: bold; font-size: 11px; text-align: center; border: 1px solid transparent; cursor: pointer; transition: transform 0.1s;
+            display: block; width: 70px; padding: 6px 0; border-radius: 8px; font-weight: bold; font-size: 11px; text-align: center; border: 1px solid transparent; cursor: pointer; transition: transform 0.1s;
         }
         .btn-toggle:active { transform: scale(0.95); }
         
@@ -32,6 +43,7 @@
         .active-30 { background: #ef4444; color: white; box-shadow: 0 2px 4px rgba(239,68,68,0.3); }
         .active-sano { background: #f59e0b; color: white; box-shadow: 0 2px 4px rgba(245,158,11,0.3); }
         .inactive { background: white; color: #64748b; border-color: #f1f5f9; }
+        .hidden-btn { display: none; }
 
         .loc-label { background: rgba(255,255,255,0.9); border: 1px solid #999; border-radius: 3px; padding: 1px 4px; font-size: 10px; font-weight: bold; white-space: nowrap; margin-left: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
         .km-marker { background: #333; color: white; border-radius: 50%; width: 14px; height: 14px; font-size: 8px; font-weight: bold; display: flex; align-items: center; justify-content: center; border: 1px solid white; }
@@ -42,11 +54,23 @@
     <div id="map-container">
         <div id="map"></div>
         <div class="control-panel">
-            <button id="b5" onclick="setRoute('5')" class="btn-toggle active-5">5km</button>
-            <button id="b10" onclick="setRoute('10')" class="btn-toggle inactive">10km</button>
-            <button id="b20" onclick="setRoute('20')" class="btn-toggle inactive">20km</button>
-            <button id="b30" onclick="setRoute('30')" class="btn-toggle inactive">30km</button>
-            <button id="bsano" onclick="setRoute('sano')" class="btn-toggle inactive">Sano</button>
+            <!-- Map Switcher -->
+            <div class="map-switch">
+                <div id="sw-yoko" onclick="switchMap('yoko')" class="switch-opt switch-active">横浜MAP</div>
+                <div id="sw-sano" onclick="switchMap('sano')" class="switch-opt switch-inactive">佐野MAP</div>
+            </div>
+            
+            <div id="btns-yoko" class="flex flex-col gap-1">
+                <button id="b5" onclick="setRoute('5')" class="btn-toggle active-5">5km</button>
+                <button id="b10" onclick="setRoute('10')" class="btn-toggle inactive">10km</button>
+                <button id="b20" onclick="setRoute('20')" class="btn-toggle inactive">20km</button>
+                <button id="b30" onclick="setRoute('30')" class="btn-toggle inactive">30km</button>
+                <button id="bsanoY" onclick="setRoute('sano_y')" class="btn-toggle inactive">佐野(仮想)</button>
+            </div>
+            
+            <div id="btns-sano" class="hidden-btn flex flex-col gap-1">
+                <button id="bsanoR" onclick="setRoute('sano_r')" class="btn-toggle active-sano">佐野(周回)</button>
+            </div>
         </div>
     </div>
 
@@ -88,10 +112,15 @@
                 color: "#ef4444", name: "30km Course",
                 elevations: [3,3,1,1,2,5,13,7,2,4,5,4,3,2,4,4,1,1,1,1,1,5,9,11,13,13,13,11,12,11,10,10,10,9,7,7,7,7,6,6,7,6,4,5,5,4,4,4,6,5,5,5,5,4,5,9,9,13,22,22,21,19,12,8,7,7,8,11,13,14,16,29,33,30,14,12,13,18,17,18,21,38,51,58,54,46,50,52,53,49,46,42,35,26,7,6,5,9,18,33,34,49,51,51,53,57,56,60,60,60,58,58,51,44,37,34,29,28,27,30,29,23,22,19,18,18,17,20,19,15,13,13,14,14,12,10,8,7,7,7,10,14,16,9,4,0,2,3,2,3], markers: [{"lat":35.4614157,"lng":139.6277228,"name":"横浜シンフォステージ"},{"lat":35.4511821,"lng":139.6473312,"name":"大さん橋"},{"lat":35.4242129,"lng":139.5974097,"name":"弘明寺観音"},{"lat":35.4549936,"lng":139.5857516,"name":"保土ケ谷公園"},{"lat":35.4732806,"lng":139.5908372,"name":"横浜国立大学"},{"lat":35.476034,"lng":139.6300295,"name":"横浜銀行アイスアリーナ"}]
             },
-            "sano": {
-                poly: "s}lwEaafsYb@`FLv@j@@VjCBd@D~ANZG`@?ZDRNf@P`@RKzAk@`Ac@PLf@M\\PJVhCmBbCiB\\d@Fn@hA`C\\~@tAu@l@[\\GX@LX^d@z@NtApAjBr@vDr@jARpAjA~D_@Fz@ZZhCfB~@Xd@`@RvCEdCX|@x@?pBCnBKZD^r@vAtClAf@fAIlBpB|@xAAtBl@dAvAJpAZ~A`@bBMzANpBMhCv@nB?hB\\pBYd@AMRABXFFTb@Tz@Gl@Rc@tAM`CIr@^PZcBl@FHgANWNF|@Vv@u@f@C`@@\\T`BzCj@t@~@d@b@bBVDl@r@vArAZv@H^`@CzAg@x@Uf@x@T\\VJRd@lAjEzFtJlH|FnD~@`CrAjAxB~AxFxDdMxC~Kl@z@fA^fAbCjAT~@?vBh@`Af@Av@Nj@GRM`@x@`A`@f@yAnAC`AWnAY^uB`@mBP{BN_AW}MgB{B_@}CuC{CoGk@e@o@Rm@CkA\\OH_@X{@eAc@M]WUsAg@DyB\\yAZ{BjBiDlAo@d@OK_BrBYb@_@nAy@xCmBvByBVoF@sJG}Hc@k@z@Sl@e@~BYHGj@OxAMz@Y^qBYc@dAcBKe@~@_Br@aHlCyCjA}Br@}Ib@SG}@Dc@b@s@vB_@jA_Am@uBs@}DYuB@iA{Aq@qAMaAa@Og@Le@RC\\RXYPc@V]TKRu@Fm@n@Ij@WKKEMBe@Ui@H]KM[?kCImA_@m@aAY_@o@KPIPW|A[t@sAwAc@cAc@M_@e@{@mAc@w@m@y@S@M\\O@EBsAEu@CSBy@]{AmA`@_AH{@a@a@k@SuAcAmA{@]Yg@Qo@NkAb@kANmCd@_AIq@gAgAuAa@q@Wg@{@L}C@_AUqBJgAMiC\\gAOw@mAeDmAgBe@}AN}@Ms@W{HqHgBeBg@T{BaB{EgE]WWCaBFmHnAe@AqA\\kEMkD}@mJsBqIqDuWoNkGyEwEkCuFc@wIIoRKLhCITSxA~@bAHnAUf@_@VeDwD_AaA_@fA[~@i@b@_A?_EV_EdCiBt@w@`A}@dAaBlAKZTf@l@^vAz@RLSMwA{@m@_@K_AyD_EdAiBdAeBz@mByCwCpFsH~@u@\\_@Pq@v@aAzByCfCeDpHwKpEkIvCmM`BuErFuGzAuAvEkAnJ_CjDaApAeAtDeIjKkK|GiGrCkCtAi@~DuA~BBlB|@xD~@fKuD~Ac@zB_@vCkBpIkHjFwBnD}@vDmBxBsBPa@|@r@VUl@OdE~DtGjGdGbFdAt@^XXLMq@^KVtAl@RtAb@zGrAvKrB`HjAbC?`BAA]a@cE", dist: 23.9, dur: 348, ascent: 261,
-                color: "#f59e0b", name: "Sano Loop (via 竹の家)",
-                elevations: [3,2,4,5,6,10,13,13,14,18,19,26,31,33,38,40,42,40,42,40,21,16,14,8,8,8,5,4,3,2,3,4,4,5,5,4,7,8,12,22,21,20,16,10,7,7,7,9,12,14,16,22,33,32,19,12,13,22,37,44,52,55,53,38,31,27,39,36,13,9,5,7,10,13,22,35,50,51,47,41,39,35,35,34,29,29,38,52,52,47,40,39,38,34,31,25,23,20,20,21,19,15,12,12,11,9,8,18,8,7,7,9,13,16,17,22,28,26,23,24,25,25,24,23,22,14,13,13,15,15,15,15,14,10,9,9,9,7,7,7,9,13,15,10,5,0,2,3,2,3], markers: [{"lat":35.4614157,"lng":139.6277228,"name":"葛生駅＝シンフォ"},{"lat":35.439742700000004,"lng":139.6144028,"name":"仮想: 多田駅"},{"lat":35.424465700000006,"lng":139.59773679999998,"name":"仮想: 田沼駅"},{"lat":35.456709700000005,"lng":139.5912588,"name":"仮想: JA佐野 三好支店"},{"lat":35.501909700000006,"lng":139.6024588,"name":"仮想: 竹の家"}]
+            "sano_y": {
+                poly: "s}lwEaafsYb@`FLv@j@@VjCBd@D~AF|@Dn@Nf@d@T|CoAPLf@M\\PtCuAbCiBd@tAhA`C\\~@tAu@l@[\\Gf@Z^d@z@N`EdCvDr@|C~A~D_@Fz@ZZhCfB~@Xd@`@RvCEdCX|@x@?pBCnBKz@x@vAtClAf@fAIlBpB|@xAAtBl@dAvAJpAZ~A`@bBMzANpBMhCv@nB?hB\\pBYVPABXFFTb@Tz@Gl@Rc@tAM`CIr@^PZcBl@FHgA^O|@Vv@u@f@C~@V`BzCjBzAb@bBdAx@vArAZv@H^`@CzAg@x@Uf@x@T\\VJRd@lAjEzFtJlH|FnD~@`CrAjAxB~AxFxDdMxC~KtBzAfAbCjCTvBh@`Af@Av@Nj@GRM`@x@`A`@f@yAnAC`Aq@nBcFr@{BN_AW}MgB{B_@}CuC{CoGk@e@o@Rm@CkA\\OH_@X{@eAc@M]WUsAg@DyB\\yAZ{BjBiDlAo@d@oBfBy@rBy@xCmBvBiJXsJG}Hc@k@z@Sl@e@~BYHGj@OxAMz@Y^qBYc@dAcBKe@~@_Br@aHlCwG~B}Ib@qAAc@b@s@vB_@jA_Am@uBs@}DYuB@iA{Aq@qAMaAa@Og@Le@RC\\RXYPc@V]Ty@gAe@X]`@PY_@{@_@WJk@u@g@f@gB~@JJoA~@{BcDuFkAmCqCqDsHkFaFcD_AjBwAeAi@SiBk@}En@[oAaAs@}AAqAg@kBZiCE{Bo@uBIeCw@qBIeAc@o@`A_Fg@o@e@w@uAyDI{@PsDTkAQcBsA{CsBeDMgAMi@QeAv@uAb@qA@qLlBoDAkD{@gK}BoImDgIgEkM_HuGgFkEeCsFg@_JM_CAq@AZc@wDEmEEiGCuFMuFc@yEoD_Av@yCxDi@KSLsCJeK{GI_@k@@Wt@e@CyEqDkBuBeFoE_FgEcE_Ig@uAaAjAeBhBWVUVI_@K_@QXa@JoFF_ESyBFoD?MKEE]^LlAL|ELV|@E}@DMWM}EMmA\\_@DDLJnD?p@EfAAn@P~JE|@q@`CoC`HsIjFeGIg@[b@Jk@f@Jt@q@h@_@\\Nz@CjCnAfAs@TJtAJl@o@tCiBlC]rAv@xEa@|GuBdANdBbBt@bAf@Tz@q@fBJ|BA|Er@rAh@zEtA~BaExFsGbKoC`J{BzA{@pAsB~DwHxLkLtG}FhBuAhBYzAw@`CG~FzBlC[zMqEdC}@zCsBbFsEtBy@nD}A|FqB|CkBv@{ApA`@FI^Qd@^tB|BvBlBdIjHfF~Dh@\\P}@~@fB\\LpAXfAVjIbBnKxB|HXdAG]yDE_@", dist: 26.6, dur: 387, ascent: 277,
+                color: "#f59e0b", name: "Sano Loop (Virtual)",
+                elevations: [3,2,4,5,9,12,13,14,18,19,29,32,37,39,42,40,42,38,15,16,10,8,8,5,4,3,2,4,5,5,5,4,7,8,13,23,21,19,11,7,7,7,10,13,14,16,31,33,22,12,13,24,40,47,55,55,43,31,27,32,18,11,8,7,10,10,20,42,50,49,45,49,53,50,38,32,28,32,48,52,48,40,39,37,33,29,24,20,20,21,21,16,15,15,9,10,10,10,13,15,14,13,10,4,2,3,5,3,2,5,9,18,25,26,18,14,14,10,12,18,21,22,23,25,25,24,23,18,13,13,14,15,15,15,13,9,9,9,7,7,7,9,13,16,8,0,0,3,3,3], markers: [{"lat":35.4614157,"lng":139.6277228,"name":"葛生駅＝シンフォ"},{"lat":35.439742700000004,"lng":139.6144028,"name":"仮想: 多田駅"},{"lat":35.424465700000006,"lng":139.59773679999998,"name":"仮想: 田沼駅"},{"lat":35.4569691,"lng":139.59158979999998,"name":"仮想: JA佐野 三好支店"},{"lat":35.516224400000006,"lng":139.61167859999998,"name":"仮想: 鈴庵"}]
+            },
+            "sano_r": {
+                poly: "k{c}EesbsYRbA@dBBpATlA^xAHj@FXjAh@~AJdHR~It@~@RzC`BzHfEzF~B|@`@H@Va@Pc@NAdDvB~C|@nHbEnBEnBt@bBtAh@^h@JfBOlAs@j@iAHo@Ng@hBd@|G|@`JtAlAVbAb@rAnAl@jAp@dC`C|MdAjGCHG@OAUMTLN@NDj@nC~AfElApBlAxAxC`CtCtBtYdSlFvDqAjMKpBTfBVf@nCzCL?tCfA~C|@x@d@nFtC`FbAh@WJfAm@|FHTBDBTRFpFDAbB`A@eBAyECCeBkBK_GCgEC{AKgBa@_@OYp@g@nAoAtCQZGIQTg@`@a@`@eA~@_BzAiChCuG|GiCbCeAx@wDvDKNQF[@mDB{F^u@@YH_ALsD^sDVgBHcFAmGAuAKgF}@{E@uGWwHViCd@aCl@kDp@{@JuCD_FHcEC}HsAKCOMNy@Mv@CLaAOmAQ_BGaEMwFTcAMmGsB_F_Aq@Qy@k@o@i@c@w@aAcAm@s@{Bk@gAAq@AQAYg@a@J[F[F[FuAQg@QIC?k@?{AAe@s@OkA[gC}@yAEs@Eo@Pi@?qAl@wA|@k@QwBcAg@AU@OUSsA{@gEY_CR}Dl@eHd@iDh@sB^sEQsBs@gCQcAKmBUyE_AyJmAuEw@}BkAiC}AwAk@i@g@y@u@}BgAcHe@uA_BeCq@yAcAmDwDuJuAsDUc@[Zo@j@{BbAmGpCiE`CiBrA{DnEeEfEy@t@_Af@gBf@cRhE_Fr@sF|AgCh@_CPeDDgALeHfC}JtDeA\\_AJq@Iq@YwBsCiCqAkBo@qD_@uC]wH_C_BQ{CLyA?kA_@gBaA}By@eBu@s@MqANg@X_AdAmAt@}CvBo@VqB@m@Bc@RqAdAkAVgCZkB|@y@LgC@yAKeCt@kHjC_A\\~@]h@SpDqAfEyAtADrBDrAKpB_AnAWvBWxAcA~@a@zB@v@SlBwAvBkA~@eANQ?Sp@W^I|AJnH~CnAh@`AJzCQvA@~A\\zH|BdHv@dBl@|BdATRLNFGXQRMr@Qh@OhAgApAiBpAiBdBcBz@c@vAg@pBaAbDoB~CsBrKoDtE}ApD{@vKwCd@{Ar@iAlBkA`FyBrCkAr@i@pAw@xAa@|AeAnBcBhDuBxEaDd@_@NKP?n@c@r@_@dB}@rEuBtJiExBaAnBsA`E}BbA_AbCeD|@uAn@w@pGYhFUzDHfDjAnD|AjLtEfE~Az@X~@TzB_CfBw@FQKg@KgAIoDMi@", dist: 25.3, dur: 345, ascent: 203,
+                color: "#f59e0b", name: "Sano Loop (Real)",
+                elevations: [94,94,91,91,91,88,85,85,85,84,81,80,80,78,76,74,75,72,75,73,72,70,70,68,67,66,66,66,66,65,64,62,62,60,59,60,62,63,65,66,67,67,69,70,72,72,75,76,77,79,80,82,84,85,85,86,87,89,90,91,91,93,96,96,97,99,110,108,108,113,118,121,130,140,192,149,140,135,126,119,114,108,107,105,107,110,110,114,115,116,118,119,120,121,123,125,130,129,132,135,139,140,145,153,156,155,155,159,163,163,160,156,155,157,155,148,143,140,137,133,131,130,126,126,126,122,122,121,118,117,115,114,114,111,109,107,107,107,105,104,102,102,103,99,97,95,95,94,93,94], markers: [{"lat":36.397506,"lng":139.610264,"name":"葛生駅"},{"lat":36.375833,"lng":139.596944,"name":"多田駅"},{"lat":36.360556,"lng":139.580278,"name":"田沼駅"},{"query":"栃木県佐野市戸室町1054","name":"JA佐野 三好支店","lat":36.3930594,"lng":139.574131},{"query":"栃木県佐野市仙波町 鈴庵","name":"鈴庵","lat":36.4523147,"lng":139.5942198}]
             }
         };
 
@@ -110,6 +139,7 @@
         }
 
         let map, currentLayer, markerGroup, kmGroup, chartInstance;
+        let currentMode = 'yoko'; // 'yoko' or 'sano'
 
         function init() {
             map = L.map('map', { zoomControl: false }).setView([35.455, 139.63], 13);
@@ -135,6 +165,28 @@
             });
 
             setRoute('5');
+        }
+
+        function switchMap(mode) {
+            currentMode = mode;
+            const swYoko = document.getElementById('sw-yoko');
+            const swSano = document.getElementById('sw-sano');
+            const btnsYoko = document.getElementById('btns-yoko');
+            const btnsSano = document.getElementById('btns-sano');
+
+            if (mode === 'yoko') {
+                swYoko.className = 'switch-opt switch-active';
+                swSano.className = 'switch-opt switch-inactive';
+                btnsYoko.style.display = 'flex';
+                btnsSano.style.display = 'none';
+                setRoute('5');
+            } else {
+                swYoko.className = 'switch-opt switch-inactive';
+                swSano.className = 'switch-opt switch-active';
+                btnsYoko.style.display = 'none';
+                btnsSano.style.display = 'flex';
+                setRoute('sano_r');
+            }
         }
 
         function setRoute(id) {
@@ -188,10 +240,28 @@
             document.getElementById('l-name').innerText = d.name;
             document.getElementById('l-name').style.color = d.color;
 
-            ['5', '10', '20', '30', 'sano'].forEach(k => {
-                const el = document.getElementById('b'+k);
-                el.className = k === id ? `btn-toggle active-${k}` : 'btn-toggle inactive';
+            // Button active state
+            const allIds = ['5', '10', '20', '30', 'sanoY', 'sanoR'];
+            const btnIdMap = { '5':'b5', '10':'b10', '20':'b20', '30':'b30', 'sano_y':'bsanoY', 'sano_r':'bsanoR' };
+            
+            Object.values(btnIdMap).forEach(bid => {
+                const el = document.getElementById(bid);
+                if(el) el.classList.replace('active-5', 'inactive');
+                if(el) el.classList.replace('active-10', 'inactive');
+                if(el) el.classList.replace('active-20', 'inactive');
+                if(el) el.classList.replace('active-30', 'inactive');
+                if(el) el.classList.replace('active-sano', 'inactive');
             });
+
+            const activeBtn = document.getElementById(btnIdMap[id]);
+            if(activeBtn) {
+                let activeClass = 'active-5';
+                if(id === '10') activeClass = 'active-10';
+                if(id === '20') activeClass = 'active-20';
+                if(id === '30') activeClass = 'active-30';
+                if(id.includes('sano')) activeClass = 'active-sano';
+                activeBtn.classList.replace('inactive', activeClass);
+            }
 
             updateChart(d);
         }
