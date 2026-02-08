@@ -3,36 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>横浜ウォーキング・マップ</title>
+    <title>横浜ウォーキング・完全版マップv9</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; font-family: sans-serif; }
         #map-container { flex: 1; position: relative; }
         #map { height: 100%; width: 100%; z-index: 1; }
-        #chart-container { height: 25%; min-height: 180px; max-height: 250px; background: white; border-top: 1px solid #ddd; padding: 10px 10px 20px 10px; z-index: 10; display: flex; flex-direction: column; }
+        #chart-container { 
+            height: 28%; min-height: 180px; max-height: 240px; 
+            background: white; border-top: 1px solid #e2e8f0; 
+            padding: 10px; z-index: 10; display: flex; flex-direction: column; 
+        }
         
-        .control-panel { position: absolute; top: 10px; right: 10px; background: rgba(255, 255, 255, 0.95); padding: 8px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; width: 140px; }
-        .btn-toggle { display: block; width: 100%; padding: 8px 0; margin-bottom: 4px; border-radius: 6px; font-weight: bold; font-size: 12px; transition: all 0.2s; text-align: center; border: 1px solid transparent; }
+        /* コンパクトな切り替えタブ */
+        .control-panel { 
+            position: absolute; top: 12px; right: 12px; 
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(4px);
+            padding: 6px; border-radius: 10px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+            z-index: 1000; width: auto; 
+            display: flex; flex-direction: column; gap: 4px;
+        }
+        .btn-toggle { 
+            display: block; width: 60px; padding: 6px 0; 
+            border-radius: 6px; font-weight: bold; font-size: 11px; 
+            text-align: center; border: 1px solid transparent; 
+            cursor: pointer;
+        }
         
-        .active-5 { background: #8b5cf6; color: white; }
-        .active-10 { background: #10b981; color: white; }
-        .active-20 { background: #2563eb; color: white; }
-        .active-30 { background: #ef4444; color: white; }
-        .inactive { background: #f1f5f9; color: #64748b; border-color: #e2e8f0; }
+        .active-5 { background: #8b5cf6; color: white; box-shadow: 0 2px 4px rgba(139,92,246,0.3); }
+        .active-10 { background: #10b981; color: white; box-shadow: 0 2px 4px rgba(16,185,129,0.3); }
+        .active-20 { background: #2563eb; color: white; box-shadow: 0 2px 4px rgba(37,99,235,0.3); }
+        .active-30 { background: #ef4444; color: white; box-shadow: 0 2px 4px rgba(239,68,68,0.3); }
+        .inactive { background: white; color: #64748b; border-color: #e2e8f0; }
 
         .loc-label { background: rgba(255,255,255,0.9); border: 1px solid #999; border-radius: 3px; padding: 1px 3px; font-size: 10px; font-weight: bold; white-space: nowrap; margin-left: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
         .km-marker { background: #333; color: white; border-radius: 50%; width: 14px; height: 14px; font-size: 8px; font-weight: bold; display: flex; align-items: center; justify-content: center; border: 1px solid white; }
     </style>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-gray-50">
 
     <div id="map-container">
         <div id="map"></div>
         <div class="control-panel">
-            <div class="text-[10px] text-slate-400 font-bold uppercase mb-1 text-center">SELECT COURSE</div>
             <button id="b5" onclick="setRoute('5')" class="btn-toggle active-5">5km</button>
             <button id="b10" onclick="setRoute('10')" class="btn-toggle inactive">10km</button>
             <button id="b20" onclick="setRoute('20')" class="btn-toggle inactive">20km</button>
@@ -41,56 +57,57 @@
     </div>
 
     <div id="chart-container">
-        <div class="flex justify-between items-end mb-1 px-2">
-            <div>
-                <span id="l-name" class="text-sm font-bold text-slate-800">5km Course</span>
-                <span id="l-dist" class="text-xs text-slate-500 font-bold ml-2">-- km</span>
+        <div class="flex justify-between items-end mb-2 px-1">
+            <div class="flex flex-col">
+                <span id="l-name" class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5">5km Course</span>
+                <div class="flex items-baseline gap-3">
+                    <span id="l-dist" class="text-xl font-black text-slate-800">-- km</span>
+                    <span id="l-ascent" class="text-xs font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">↗ -- m</span>
+                </div>
             </div>
-            <div id="l-time" class="text-xs text-slate-500 font-bold">--</div>
+            <div id="l-time" class="text-sm font-bold text-slate-600 mb-1">--</div>
         </div>
-        <div class="flex-1 relative w-full" id="chart-wrapper">
+        <div class="flex-1 relative w-full overflow-hidden">
             <canvas id="elevationChart"></canvas>
-            <div id="no-data-msg" class="hidden absolute inset-0 flex items-center justify-center text-slate-400 text-xs font-bold bg-slate-50">
-                標高データなし
-            </div>
         </div>
     </div>
 
     <script>
+        // 修正点: dN.dist などの変数参照名をAPI返却値に合わせて統一
         const data = {
             "5": { 
                 poly: "s}lwEaafsYb@`F|AAtBCbAMbAYd@SPXP`@dA`CNHFLCHZv@FNFCbA}@|AqAj@k@\\e@VY@CBBLTJRRJB?F@Ph@EH?@RSh@pAtB}A`Aw@JTD?X@?DGb@ALKfAE^LBZBh@?@AFD@?b@CTHHHJCT@ZGJITET[`@Q\\O@BBHPMNNx@p@TRPTn@t@^^LRH@LIl@c@^Y`@dAJRH@x@[LEFXPv@LTX^Vb@l@rARf@JPNf@HTP@^BZ?XNbAz@f@j@bAiA@BHEPOl@c@jAw@d@UVEj@?p@CdAUrATb@Bb@Kj@IDLt@f@TJlAVJJR~@Lj@XB^BPM\\WHKDQFG^CB?@FVrAWsAAGC?Q@SDCHGPUP_@X_@CYC[{AEQEEsA[UKu@g@EMM?o@N[Dc@Es@MGCY@a@He@HoA@a@Hm@\\iAx@o@d@IDACMLm@p@GHW[cA_A]WWE_@?a@CQi@GSKQ[s@u@cBa@g@MUGYkBp@kBr@{@X_@HeCP_BJSB[@}AG_@EcDgAWKq@Ik@AO@KDw@`@gAl@[{@q@cBOSKSE[?MKUKUKHwDrCoA~@CEIUMMIAIB]TGKQMaAf@_Bj@KHGMOa@K]CY@[Ho@SC?c@?]Ee@O_BGi@C_@SCW@?WMg@c@yE", 
-                dist: "undefined km", 
-                time: "NaNh NaNm", 
-                color: "#8b5cf6", 
-                name: "5km Course",
+                dist: 5.2, // 数値のまま渡す
+                dur: 77,   // 数値のまま渡す
+                ascent: 64,
+                color: "#8b5cf6", name: "5km Course",
                 elevations: [3,2,2,2,2,2,2,2,2,3,3,4,4,5,6,7,7,7,7,8,8,9,10,11,12,11,11,12,12,13,13,13,13,14,15,16,18,20,22,24,24,25,26,27,28,30,29,27,25,25,24,23,25,26,27,28,30,32,35,37,38,39,39,39,40,41,41,41,40,40,40,40,39,37,33,31,33,36,39,40,40,40,40,41,40,41,40,39,39,39,39,37,36,33,31,29,28,26,25,24,24,24,25,27,29,27,25,22,21,19,18,16,14,13,13,13,13,13,13,13,13,13,12,11,11,11,10,9,8,8,7,6,5,5,5,5,4,4,4,4,4,4,3,2,2,2,2,2,2,3],
                 markers: [{"lat":35.4614157,"lng":139.6277228,"name":"横浜シンフォステージ"},{"lat":35.443594,"lng":139.62255,"name":"野毛山動物園"}]
             },
             "10": { 
                 poly: "w}lwE{afsY?e@Ea@WsCGSSmB?UIk@IoAIwBCgC@_C?sBC}@l@OjAa@l@Yp@a@PGPMr@i@HCPQfDeCd@c@~@o@RKZYzBcBpAcAn@e@xAoAlAoAtAyBZi@JWzA}C|AeDXo@LYRYZm@Zi@Tc@JMp@s@p@i@z@g@n@Yp@OdB[TArAOl@Ej@Iz@IrAQx@QXMHERUf@[PIVEH?l@FLa@FKk@e@GEbA}Bz@yByB_BCE?ML]AGOK}@q@CMDICCFOa@Yi@a@EIMUKIQKSUOQ]Wg@Qa@]OUGOGAK@GDCDMKLJBEFELALPNT`@\\f@P\\VNPRTPJJHLTDHn@d@ZTGNp@f@jDhCl@b@TJPDRAFXB^Ib@q@dBNRpE`Df@Z~AhAVVLBfBnApBxANFELd@ZbAt@Sh@FHHLBJVn@?X@TBXRr@R`@FLBRpDbCLRCXKl@|@n@z@h@LRnBvD|DpH`@r@f@|@d@|@N\\`@x@YZg@l@}@bAQRBHPl@Lb@IDBB^lARr@BLC@[RnArE|BhGa@Zy@h@mAx@WPQPi@^{@j@QRYT_@b@BF_@x@MXUh@c@dA_@jAILMd@Qf@e@tAK^TZd@l@b@l@JJCHSlAETO@KDITOn@CXEVEJGDe@HGAWMQEYB_@I[OE?Sl@IJMDSBVrAWsAAGC?Q@SDKZu@j@_@CYC[{AEQEEsA[UKu@g@EMM?o@N[Dc@Es@MGCY@a@He@Hm@?a@@a@Hm@\\e@\\sA`AIDACMLm@p@GHW[cA_A]WWE_@?a@CQi@GSKQ[s@u@cBa@g@MUGYkBp@kBr@{@X_@HeF\\SB[@}AG_@EwAe@kAa@WKq@Ik@AO@KDw@`@gAl@[{@q@cBOSKSE[?MKUKUKHwDrCoA~@CEIUMMIAIB]TGKQMaAf@_Bj@KHGMOa@K]CY@[Ho@SC?c@?]Ee@O_BGi@C_@SCW@?WMg@c@yE", 
-                dist: "undefined km", 
-                time: "NaNh NaNm", 
-                color: "#10b981", 
-                name: "10km Course",
+                dist: 8.7,
+                dur: 125,
+                ascent: 83,
+                color: "#10b981", name: "10km Course",
                 elevations: [3,4,4,3,2,1,1,1,1,1,2,3,4,5,7,11,14,14,9,3,0,2,3,4,5,6,5,4,4,4,4,3,2,0,3,3,4,5,5,4,4,2,0,1,1,1,1,1,1,1,1,1,1,1,2,5,7,7,9,10,11,12,13,13,13,13,13,13,13,12,11,11,11,11,12,12,11,10,10,9,7,8,10,9,9,9,9,9,8,8,8,8,8,7,6,5,6,6,7,8,9,10,16,26,32,32,36,40,40,40,41,41,39,39,38,35,31,28,26,24,24,25,28,26,22,19,17,14,13,13,13,13,13,12,11,10,9,8,6,5,5,4,4,4,4,3,2,2,2,3],
                 markers: [{"lat":35.4614157,"lng":139.6277228,"name":"横浜シンフォステージ"},{"lat":35.4511821,"lng":139.6473312,"name":"大さん橋"},{"lat":35.440465,"lng":139.633276,"name":"伊勢佐木長者町駅"},{"lat":35.443594,"lng":139.62255,"name":"野毛山動物園"}]
             },
             "20": { 
                 poly: "w}lwE{afsYEgAs@uGSqCM_GAqHfDkAtAw@nA_AfDeCxB_BvC}B`CiBxAoAlAoAtAyBbC_F|AeDrB{D`@q@p@s@lBqA`Bi@nEm@tCYlCc@XM\\[x@e@VEv@FLa@FKk@e@GEbA}Bz@yByB_BCSL]QS}@q@CMDIBSqAeAY_@u@s@eAi@a@]_@g@SFQEPDTG\\f@`@\\f@PrAjAX^t@n@ZTGNp@f@jDhCl@b@f@PRAFXB^Ib@q@dBNRpE`Df@Z~AhAlCjBpBxANFELd@ZbAt@Sh@FHHLBJVn@?X@TBXRr@^bApDbCLRKjA]|@kBfDKNRVB@NRb@|@T\\Ub@rAnBtCrE`CxDDHED^l@`@p@HL\\`AjBvG|BbHl@dB~@fCzBdGnEvMnAbDVx@Z|@XPHJFN^`@VTVDd@Xv@jB`AnCvA`I|BfMd@lCVd@nAnATRa@|@o@tADDKP]t@f@h@RTLJ?NHJBPY^v@v@PZ?f@GLUTHPFRARTf@f@p@vBdDv@jAGFJNz@rAlAlBrArBd@t@vAtB|B|DPZFZBN|@n@b@d@b@~@jBrGh@nCnBpFdAdDBLg@XRv@t@lCLp@\\lAZ`@n@`@h@RPf@h@fANPpAL~@Gj@RXJr@\\t@^`Ab@|@f@LNLVDH]rACTAD@LJBEh@Gf@AFRXX\\JNqAVy@LI?_@IOE[f@MRUPcARcBTmBL_AHKDUMc@Si@IyDg@wIkAYI_@YaC}BY_@uAeDw@oBmAXk@Ak@Nw@`@QLw@aAKGg@MW]Io@G]GAGBe@Jc@Nq@F{@Fm@NMXyAjAeCv@kAl@[VOOgBbC[d@}@hDYz@Wd@y@x@qAb@qEHoDG}KCiD_@k@EYbASj@M\\YAaAw@{@q@u@m@eDgC{GiF}@s@Y]o@OcAq@_BoAc@]USmCuBeAu@wAmAuA_AyAgAmDqCgCkBu@s@IAOHE?NAT_@_@g@a@[i@k@{C}CaAaA}@}@o@y@k@k@iBiBcBiBcFiBsPcG}@[c@WeAo@wCwBmJmHy@u@wAeA{AmA{BaCw@u@}D}Bo@]oAw@w@o@}@oAOWe@b@_@aA]_AIm@?k@OEW}@_@_C}@uGUkCIwDQ}BWqC]mCk@wFQ}DYeIBaAeAq@_@]mAkAkCyBmG{FgGqFaDqCe@TcAVGFHv@Iw@FGbAWd@UlAo@z@W`@A`@MxDaB|CkBv@{A|@r@RQFIVYFFd@^tB|B|@p@x@z@`C~BZV|@|@hA`A^RvD~Cn@^h@\\Mq@^KVtAf@P\\LpAXfAVjIbBvAXfAN`Cl@lB`@tBVfE@dA??G]yDE_@", 
-                dist: "undefined km", 
-                time: "NaNh NaNm", 
-                color: "#2563eb", 
-                name: "20km Course",
+                dist: 18.9,
+                dur: 266,
+                ascent: 124,
+                color: "#2563eb", name: "20km Course",
                 elevations: [3,4,2,1,1,2,5,11,12,0,2,5,6,4,4,2,3,5,4,1,1,1,1,1,1,3,7,10,11,13,13,13,12,12,12,11,12,10,10,10,9,7,7,7,7,7,6,6,7,7,5,4,5,5,4,4,4,4,5,6,5,5,5,5,4,4,6,8,9,10,19,22,22,21,20,14,10,7,7,7,8,9,12,13,14,16,20,32,33,29,16,12,10,12,12,12,11,7,5,4,6,6,6,5,6,6,6,5,5,6,6,6,5,6,6,7,10,10,10,14,14,17,25,27,25,19,13,15,13,12,10,9,9,9,7,7,7,7,9,13,15,14,9,4,0,1,3,3,2,3],
                 markers: [{"lat":35.4614157,"lng":139.6277228,"name":"横浜シンフォステージ"},{"lat":35.4511821,"lng":139.6473312,"name":"大さん橋"},{"lat":35.4242129,"lng":139.5974097,"name":"弘明寺観音"},{"lat":35.4534385,"lng":139.6029147,"name":"天王町駅前公園"},{"lat":35.476034,"lng":139.6300295,"name":"横浜銀行アイスアリーナ"}]
             },
             "30": { 
                 poly: "w}lwE{afsYmAoNOqP|FcChOcLzEyDbDiEtIaQrAeBlBqA`Bi@nEm@bH}@pBoAnA@La@c@q@vB}F}BsBL]QSaA_AH]qAeAoAsAeAi@aAeASFQEPDTG\\f@hAn@rAjAnAnARd@p@f@jDhCtAt@ZVB^Ib@q@dBNRpE`Df@Z~AhAlCjBzBnBd@ZbAt@Sh@FHHLZtAXbB^bA~DvCi@hCkBfDJh@NRb@|@T\\Ub@rAnBtCrE`DvFhA`CjBvG|BbHhFrNnEvMnAbDVx@~@zAf@p@tAt@xBzFvA`I|BfM|@rDnAnATRa@|@o@tAc@lAz@~@Vf@Up@hArA?f@St@ZnAf@p@vBdDz@bBhC`ExBhDtErHXv@`A~@fAdBtCbLnBpFdAdDc@f@Rv@t@lCLp@x@nBn@`@h@RPf@h@fA`B^~@GdA^hB|@~BjALNLVW|AEZFz@In@RXX\\JNqAVy@LI?_@Ik@`@c@d@cARcBTmBLaB@mA]qOsBy@c@{C}CuAeDw@oBmAXwALw@`@QLw@aAKGg@Ma@mAW[iAZmBNm@NMXyAjAeCv@kAl@[VOOgBbC[d@}@hDq@`By@x@qAb@aK@}KCiD_@k@EYbAi@vAGl@YXQrA]rCKPo@Oo@Ca@FSnA_@dAaArEgBfE}@dGOhA]ASr@_@j@g@bAy@JkBIiArBgBXiB\\B\\cAH}@ZIZcAPiBWs@UaBw@{Hk@cAEa@FHf@\\zBPj@^nAQTu@Da@Cy@GPx@Hn@]a@YUKj@_@PeAKoBbAq@n@i@Lo@w@{B{Dg@qBUu@]@Ck@O_A_CY}CW]M[UkAI}BQi@k@g@mBq@cDi@[UBu@Xq@q@}@mB{@mC{@}BiAf@YKkAu@iAaAqAi@aEpC{@f@yBc@}@pCuBtAyEtC}Ab@s@VQz@IlAgAF][o@_@_CCaAa@Gk@AKO?Ql@gAZcBL]e@Go@_@qHOq@?aACsDCTqAz@C`C}@\\UFKn@Dn@?j@?k@U}BB}A@g@MBsCq@YSNy@N_A`@{ACYMCMQq@j@_@Za@PCSYg@MSIS[k@]gAIwANgAn@mCf@sCOgAE_C]cBcDwDkCiECiCBe@u@}@u@G_@BSOCUjAQr@Ql@e@IQSqAGiAAyDA}IBq_@Cc@^E@kF?eIUiSK_JTqEtEeM`AaC\\gCEwL]kBp@wBkAeBeCiDa@c@?[ESUm@Ra@Nq@Uy@SiCpBu@nBaAz@GzHqD|@i@v@{A|@r@RQFI^Qd@^tB|B|@p@zDzDzJjIn@^h@\\Mq@^KVtAf@P\\LpAXlIdB|Cn@dJlBbCLjCAdAG]yDE_@", 
-                dist: "undefined km", 
-                time: "NaNh NaNm", 
-                color: "#ef4444", 
-                name: "30km Course",
+                dist: 23.1,
+                dur: 330,
+                ascent: 207,
+                color: "#ef4444", name: "30km Course",
                 elevations: [3,3,1,1,2,5,13,8,2,4,5,4,3,2,4,4,1,1,1,1,1,5,9,11,13,13,13,11,12,11,10,10,10,9,7,7,7,7,6,6,7,6,4,5,5,4,4,4,6,5,5,5,5,4,5,9,9,12,22,22,21,19,11,8,7,7,8,11,13,14,16,28,33,31,16,12,13,18,16,18,21,38,50,58,54,46,50,51,53,49,46,42,35,25,7,6,6,9,18,33,35,49,51,51,53,56,56,60,60,60,58,57,51,43,37,33,29,28,27,30,29,23,22,19,18,18,17,20,19,15,13,13,14,14,12,10,8,7,7,7,10,14,16,9,4,0,2,3,2,3],
                 markers: [{"lat":35.4614157,"lng":139.6277228,"name":"横浜シンフォステージ"},{"lat":35.4511821,"lng":139.6473312,"name":"大さん橋"},{"lat":35.4242129,"lng":139.5974097,"name":"弘明寺観音"},{"lat":35.4549936,"lng":139.5857516,"name":"保土ケ谷公園"},{"lat":35.4732806,"lng":139.5908372,"name":"横浜国立大学"},{"lat":35.476034,"lng":139.6300295,"name":"横浜銀行アイスアリーナ"}]
             }
@@ -127,12 +144,18 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
+                    plugins: { legend: { display: false }, tooltip: { 
+                        mode: 'index', intersect: false,
+                        callbacks: {
+                            label: function(ctx) { return '標高: ' + ctx.parsed.y + 'm'; }
+                        }
+                    }},
                     scales: {
-                        x: { display: true, ticks: { maxTicksLimit: 10 } },
-                        y: { display: true, title: { display: true, text: '標高 (m)' } }
+                        x: { display: true, ticks: { maxTicksLimit: 8, font: {size: 10} }, grid: {display: false} },
+                        y: { display: true, title: { display: false }, ticks: { font: {size: 10} } }
                     },
-                    elements: { point: { radius: 0 } }
+                    elements: { point: { radius: 0 } },
+                    interaction: { mode: 'nearest', axis: 'x', intersect: false }
                 }
             });
 
@@ -147,9 +170,11 @@
             const d = data[id];
             const coords = decode(d.poly);
             
+            // Map Draw
             currentLayer = L.polyline(coords, { color: d.color, weight: 5, opacity: 0.8 }).addTo(map);
             map.fitBounds(currentLayer.getBounds(), { padding: [20, 20] });
 
+            // Km Markers
             let distAcc = 0;
             let nextKm = 1;
             for (let i = 0; i < coords.length - 1; i++) {
@@ -168,6 +193,7 @@
                 distAcc += dist;
             }
 
+            // Location Markers
             d.markers.forEach((m) => {
                 L.circleMarker([m.lat, m.lng], { radius: 4, fillColor: 'white', color: d.color, weight: 2, fillOpacity: 1 }).addTo(markerGroup);
                 const labelIcon = L.divIcon({
@@ -178,49 +204,42 @@
                 L.marker([m.lat, m.lng], { icon: labelIcon, zIndexOffset: 1000 }).addTo(markerGroup);
             });
 
-            document.getElementById('l-dist').innerText = d.dist;
-            document.getElementById('l-time').innerText = d.time;
+            // Update Info
+            document.getElementById('l-dist').innerText = d.dist + " km";
+            document.getElementById('l-ascent').innerText = "獲得標高: " + d.ascent + " m";
+            
+            const hours = Math.floor(d.dur / 60);
+            const mins = d.dur % 60;
+            document.getElementById('l-time').innerText = `想定時間: ${hours > 0 ? hours + '時間' : ''}${mins}分`;
+            
             document.getElementById('l-name').innerText = d.name;
             document.getElementById('l-name').style.color = d.color;
-            
+
             ['5', '10', '20', '30'].forEach(k => {
                 document.getElementById('b'+k).className = k === id ? `btn-toggle active-${k}` : 'btn-toggle inactive';
             });
 
+            // Update Chart
             updateChart(d);
         }
 
         function updateChart(d) {
-            const chartWrapper = document.getElementById('chart-wrapper');
-            const noDataMsg = document.getElementById('no-data-msg');
-            const canvas = document.getElementById('elevationChart');
-
-            if (!d.elevations || d.elevations.length === 0) {
-                canvas.style.display = 'none';
-                noDataMsg.classList.remove('hidden');
-                // コンテナの高さを少し縮める調整も可能ですが、メッセージ表示のみにします
-                return;
-            }
-
-            canvas.style.display = 'block';
-            noDataMsg.classList.add('hidden');
-
             const count = d.elevations.length;
             const labels = d.elevations.map((_, i) => {
-                const totalDist = parseFloat(d.dist);
-                const current = (totalDist * (i / (count - 1))).toFixed(1);
+                const current = (d.dist * (i / (count - 1))).toFixed(1);
                 return current + "km";
             });
 
             chartInstance.data = {
                 labels: labels,
                 datasets: [{
-                    label: '標高 (m)',
+                    label: 'Elevation',
                     data: d.elevations,
                     borderColor: d.color,
                     backgroundColor: d.color + "33",
+                    borderWidth: 2,
                     fill: true,
-                    tension: 0.3
+                    tension: 0.4
                 }]
             };
             chartInstance.update();
