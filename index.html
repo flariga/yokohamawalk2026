@@ -29,6 +29,20 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
             margin-left: 10px;
         }
+        .km-marker {
+            background: rgba(50, 50, 50, 0.9);
+            color: white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 9px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid white;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
     </style>
 </head>
 <body class="bg-gray-100 m-0 overflow-hidden">
@@ -78,18 +92,20 @@
             return points;
         }
 
-        let map, currentLayer, markerGroup;
+        let map, currentLayer, markerGroup, kmGroup;
 
         function init() {
             map = L.map('map', { zoomControl: false }).setView([35.455, 139.63], 13);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(map);
             markerGroup = L.layerGroup().addTo(map);
+            kmGroup = L.layerGroup().addTo(map);
             setRoute('5');
         }
 
         function setRoute(id) {
             if (currentLayer) map.removeLayer(currentLayer);
             markerGroup.clearLayers();
+            kmGroup.clearLayers();
             
             const d = data[id];
             const coords = decode(d.poly);
@@ -97,7 +113,29 @@
             currentLayer = L.polyline(coords, { color: d.color, weight: 6, opacity: 0.8 }).addTo(map);
             map.fitBounds(currentLayer.getBounds(), { padding: [50, 50] });
 
-            d.markers.forEach((m, i) => {
+            // Distance Plot Logic
+            let distAcc = 0;
+            let nextKm = 1;
+            for (let i = 0; i < coords.length - 1; i++) {
+                const A = L.latLng(coords[i]);
+                const B = L.latLng(coords[i+1]);
+                const dist = A.distanceTo(B) / 1000;
+                
+                if (distAcc + dist >= nextKm) {
+                    const icon = L.divIcon({
+                        className: 'km-marker',
+                        html: `<span>${nextKm}</span>`,
+                        iconSize: [16, 16],
+                        iconAnchor: [8, 8]
+                    });
+                    L.marker(B, { icon: icon, zIndexOffset: 50 }).addTo(kmGroup);
+                    nextKm++;
+                }
+                distAcc += dist;
+            }
+
+            // Location Markers
+            d.markers.forEach((m) => {
                 L.circleMarker([m.lat, m.lng], {
                     radius: 5, fillColor: 'white', color: d.color, weight: 2, fillOpacity: 1
                 }).addTo(markerGroup);
