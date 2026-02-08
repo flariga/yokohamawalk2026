@@ -22,7 +22,6 @@
             z-index: 1000; width: auto; display: flex; flex-direction: column; gap: 6px;
         }
         
-        /* Map Switcher Style */
         .map-switch {
             display: flex; background: #e2e8f0; border-radius: 8px; padding: 2px; margin-bottom: 4px;
         }
@@ -54,7 +53,6 @@
     <div id="map-container">
         <div id="map"></div>
         <div class="control-panel">
-            <!-- Map Switcher -->
             <div class="map-switch">
                 <div id="sw-yoko" onclick="switchMap('yoko')" class="switch-opt switch-active">横浜MAP</div>
                 <div id="sw-sano" onclick="switchMap('sano')" class="switch-opt switch-inactive">佐野MAP</div>
@@ -113,14 +111,14 @@
                 elevations: [3,3,1,1,2,5,13,7,2,4,5,4,3,2,4,4,1,1,1,1,1,5,9,11,13,13,13,11,12,11,10,10,10,9,7,7,7,7,6,6,7,6,4,5,5,4,4,4,6,5,5,5,5,4,5,9,9,13,22,22,21,19,12,8,7,7,8,11,13,14,16,29,33,30,14,12,13,18,17,18,21,38,51,58,54,46,50,52,53,49,46,42,35,26,7,6,5,9,18,33,34,49,51,51,53,57,56,60,60,60,58,58,51,44,37,34,29,28,27,30,29,23,22,19,18,18,17,20,19,15,13,13,14,14,12,10,8,7,7,7,10,14,16,9,4,0,2,3,2,3], markers: [{"lat":35.4614157,"lng":139.6277228,"name":"横浜シンフォステージ"},{"lat":35.4511821,"lng":139.6473312,"name":"大さん橋"},{"lat":35.4242129,"lng":139.5974097,"name":"弘明寺観音"},{"lat":35.4549936,"lng":139.5857516,"name":"保土ケ谷公園"},{"lat":35.4732806,"lng":139.5908372,"name":"横浜国立大学"},{"lat":35.476034,"lng":139.6300295,"name":"横浜銀行アイスアリーナ"}]
             },
             "sano_y": {
-                poly: "s}lwEaafsYb@`FLv@j@@VjCBd@D~AF|@Dn@Nf@d@T|CoAPLf@M\\PtCuAbCiBd@tAhA`C\\~@tAu@l@[\\Gf@Z^d@z@N`EdCvDr@|C~A~D_@Fz@ZZhCfB~@Xd@`@RvCEdCX|@x@?pBCnBKz@x@vAtClAf@fAIlBpB|@xAAtBl@dAvAJpAZ~A`@bBMzANpBMhCv@nB?hB\\pBYVPABXFFTb@Tz@Gl@Rc@tAM`CIr@^PZcBl@FHgA^O|@Vv@u@f@C~@V`BzCjBzAb@bBdAx@vArAZv@H^`@CzAg@x@Uf@x@T\\VJRd@lAjEzFtJlH|FnD~@`CrAjAxB~AxFxDdMxC~KtBzAfAbCjCTvBh@`Af@Av@Nj@GRM`@x@`A`@f@yAnAC`Aq@nBcFr@{BN_AW}MgB{B_@}CuC{CoGk@e@o@Rm@CkA\\OH_@X{@eAc@M]WUsAg@DyB\\yAZ{BjBiDlAo@d@oBfBy@rBy@xCmBvBiJXsJG}Hc@k@z@Sl@e@~BYHGj@OxAMz@Y^qBYc@dAcBKe@~@_Br@aHlCwG~B}Ib@qAAc@b@s@vB_@jA_Am@uBs@}DYuB@iA{Aq@qAMaAa@Og@Le@RC\\RXYPc@V]Ty@gAe@X]`@PY_@{@_@WJk@u@g@f@gB~@JJoA~@{BcDuFkAmCqCqDsHkFaFcD_AjBwAeAi@SiBk@}En@[oAaAs@}AAqAg@kBZiCE{Bo@uBIeCw@qBIeAc@o@`A_Fg@o@e@w@uAyDI{@PsDTkAQcBsA{CsBeDMgAMi@QeAv@uAb@qA@qLlBoDAkD{@gK}BoImDgIgEkM_HuGgFkEeCsFg@_JM_CAq@AZc@wDEmEEiGCuFMuFc@yEoD_Av@yCxDi@KSLsCJeK{GI_@k@@Wt@e@CyEqDkBuBeFoE_FgEcE_Ig@uAaAjAeBhBWVUVI_@K_@QXa@JoFF_ESyBFoD?MKEE]^LlAL|ELV|@E}@DMWM}EMmA\\_@DDLJnD?p@EfAAn@P~JE|@q@`CoC`HsIjFeGIg@[b@Jk@f@Jt@q@h@_@\\Nz@CjCnAfAs@TJtAJl@o@tCiBlC]rAv@xEa@|GuBdANdBbBt@bAf@Tz@q@fBJ|BA|Er@rAh@zEtA~BaExFsGbKoC`J{BzA{@pAsB~DwHxLkLtG}FhBuAhBYzAw@`CG~FzBlC[zMqEdC}@zCsBbFsEtBy@nD}A|FqB|CkBv@{ApA`@FI^Qd@^tB|BvBlBdIjHfF~Dh@\\P}@~@fB\\LpAXfAVjIbBnKxB|HXdAG]yDE_@", dist: 26.6, dur: 387, ascent: 277,
+                poly: "s}lwEaafsYb@`FLv@j@@VjCBd@D~ARBCVG`@?ZDRNf@P`@RKzAk@`Ac@PLBHVOJGP?JPJVhCmBbCiBNNLTFn@hA`C\\~@tAu@l@[\\GX@LX@T\\N\\F\\FtApAjBr@v@Zp@BlARjARpAjAZCdAC|AWFz@JPNHjA~@|@f@~@Xd@`@RvCEdCJf@LTx@?pBCnBKZD^r@vAtCf@ZNPTEr@SRHlBpBZRTj@JXAtBZt@PNl@Bh@Fl@Xb@@~A`@bBMJA?HP@\\B^@f@?hAMhCv@nB?hB\\\\APE`AQd@AMRABXFFTNTR?VCb@Cb@DD?BLSVO|@M`CIr@DNX@J@NeBl@FHgAD[HBNF|@Vv@u@f@C`@@PDJNb@z@|@~AVl@RF~@d@b@bBVDXRR^d@`@ZXJBHRZv@H^BH\\Mz@W^Ox@Uf@x@T\\LAHLRd@lAjEpBzDhCxDbCxBhDbCnD~@rAp@l@`@f@j@b@lA~AxFt@hDbCzGhBrGn@jCl@z@fA^j@xAZh@jATNDn@E~@Jv@\\`Af@Ql@NHZRKVGRM`@x@`A`@f@?JKHc@Ri@d@C`A?RWz@KTMHu@L_ARmBP{BNKBSG_@ScBWyJoA{B_@}CuCi@o@qB_FUk@UDo@Rm@CkA\\OH_@X{@eAc@M]WUsAKC[HeAZs@@_AHYPSZs@l@s@`@iDlAo@d@OK_BrBYb@_@nAy@xCe@z@gAz@m@PkADoF@sJGkB?_AGqC[WDSt@Sl@Qf@SvASGEPGj@OxAMz@Gf@QGoAMYCGGIHOr@IFy@Ei@EO\\U`@m@b@q@N]Rq@TuAd@{B|@gAh@i@Jg@Tw@`@eAPuCF_DTg@DSGYMc@RWNKRWj@[jA_@jAIIEFMOOOQKcA_@q@SsA]iBBuB@UMs@mAq@qAMaACY]H[FKDQLSDEN@LRX?HYFc@V]TK?m@gAQISb@EJWTGAXWFOOUWU_@WJk@s@]AIB_@Tc@JO@SJCLVd@GHa@GWHUZiAb@q@cDuF_AeBz@{@dB_B`CeCp@gAXg@j@aB~@qDt@uCD]J]VaACINa@Ns@j@sCN}@FqAToAh@iBzAkGi@cETSE_@AKD}@AiAQgAyAsISy@Yi@m@c@OKZD@@@?SM?C`@H`@o@\\uAIyA_B_FK}@BWLq@HOG_@mAaDWk@Ek@e@uAM@i@wAA_@IOo@iAw@qBM]Sm@FOm@eAKk@kAgDe@qA]oA}@kEk@uBcB{HY{A]w@gAcAcDeBOAa@W[Aq@FBJL?@UBkASw@IMi@GMZOD@GJKVeBNKOCB[Bc@?s@IgAOsCk@aFE_@", dist: 14.8, dur: 217, ascent: 154,
                 color: "#f59e0b", name: "Sano Loop (Virtual)",
-                elevations: [3,2,4,5,9,12,13,14,18,19,29,32,37,39,42,40,42,38,15,16,10,8,8,5,4,3,2,4,5,5,5,4,7,8,13,23,21,19,11,7,7,7,10,13,14,16,31,33,22,12,13,24,40,47,55,55,43,31,27,32,18,11,8,7,10,10,20,42,50,49,45,49,53,50,38,32,28,32,48,52,48,40,39,37,33,29,24,20,20,21,21,16,15,15,9,10,10,10,13,15,14,13,10,4,2,3,5,3,2,5,9,18,25,26,18,14,14,10,12,18,21,22,23,25,25,24,23,18,13,13,14,15,15,15,13,9,9,9,7,7,7,9,13,16,8,0,0,3,3,3], markers: [{"lat":35.4614157,"lng":139.6277228,"name":"葛生駅＝シンフォ"},{"lat":35.439742700000004,"lng":139.6144028,"name":"仮想: 多田駅"},{"lat":35.424465700000006,"lng":139.59773679999998,"name":"仮想: 田沼駅"},{"lat":35.4569691,"lng":139.59158979999998,"name":"仮想: JA佐野 三好支店"},{"lat":35.516224400000006,"lng":139.61167859999998,"name":"仮想: 鈴庵"}]
+                elevations: [3,2,2,4,4,5,5,7,10,11,13,13,13,15,17,18,19,22,28,31,32,34,37,38,40,42,41,41,41,42,43,36,25,14,16,15,13,8,8,8,8,7,5,4,5,4,2,2,3,4,4,5,4,5,5,5,4,4,7,9,8,11,15,22,22,21,21,19,14,11,9,7,7,7,7,7,10,12,13,14,15,16,18,30,33,33,29,20,12,12,13,13,21,32,39,43,47,53,55,56,53,48,36,31,29,27,29,32,29,16,13,10,8,7,6,6,9,11,9,8,7,6,6,5,5,6,6,6,6,6,7,8,8,8,8,8,9,9,10,10,9,8,7,7,7,4,4,3,2,3], markers: [{"lat":35.4614157,"lng":139.6277228,"name":"葛生駅＝シンフォ"},{"lat":35.439742700000004,"lng":139.6144028,"name":"仮想: 多田駅"},{"lat":35.424465700000006,"lng":139.59773679999998,"name":"仮想: 田沼駅"},{"lat":35.4569691,"lng":139.59158979999998,"name":"仮想: JA佐野 三好支店"}]
             },
             "sano_r": {
-                poly: "k{c}EesbsYRbA@dBBpATlA^xAHj@FXjAh@~AJdHR~It@~@RzC`BzHfEzF~B|@`@H@Va@Pc@NAdDvB~C|@nHbEnBEnBt@bBtAh@^h@JfBOlAs@j@iAHo@Ng@hBd@|G|@`JtAlAVbAb@rAnAl@jAp@dC`C|MdAjGCHG@OAUMTLN@NDj@nC~AfElApBlAxAxC`CtCtBtYdSlFvDqAjMKpBTfBVf@nCzCL?tCfA~C|@x@d@nFtC`FbAh@WJfAm@|FHTBDBTRFpFDAbB`A@eBAyECCeBkBK_GCgEC{AKgBa@_@OYp@g@nAoAtCQZGIQTg@`@a@`@eA~@_BzAiChCuG|GiCbCeAx@wDvDKNQF[@mDB{F^u@@YH_ALsD^sDVgBHcFAmGAuAKgF}@{E@uGWwHViCd@aCl@kDp@{@JuCD_FHcEC}HsAKCOMNy@Mv@CLaAOmAQ_BGaEMwFTcAMmGsB_F_Aq@Qy@k@o@i@c@w@aAcAm@s@{Bk@gAAq@AQAYg@a@J[F[F[FuAQg@QIC?k@?{AAe@s@OkA[gC}@yAEs@Eo@Pi@?qAl@wA|@k@QwBcAg@AU@OUSsA{@gEY_CR}Dl@eHd@iDh@sB^sEQsBs@gCQcAKmBUyE_AyJmAuEw@}BkAiC}AwAk@i@g@y@u@}BgAcHe@uA_BeCq@yAcAmDwDuJuAsDUc@[Zo@j@{BbAmGpCiE`CiBrA{DnEeEfEy@t@_Af@gBf@cRhE_Fr@sF|AgCh@_CPeDDgALeHfC}JtDeA\\_AJq@Iq@YwBsCiCqAkBo@qD_@uC]wH_C_BQ{CLyA?kA_@gBaA}By@eBu@s@MqANg@X_AdAmAt@}CvBo@VqB@m@Bc@RqAdAkAVgCZkB|@y@LgC@yAKeCt@kHjC_A\\~@]h@SpDqAfEyAtADrBDrAKpB_AnAWvBWxAcA~@a@zB@v@SlBwAvBkA~@eANQ?Sp@W^I|AJnH~CnAh@`AJzCQvA@~A\\zH|BdHv@dBl@|BdATRLNFGXQRMr@Qh@OhAgApAiBpAiBdBcBz@c@vAg@pBaAbDoB~CsBrKoDtE}ApD{@vKwCd@{Ar@iAlBkA`FyBrCkAr@i@pAw@xAa@|AeAnBcBhDuBxEaDd@_@NKP?n@c@r@_@dB}@rEuBtJiExBaAnBsA`E}BbA_AbCeD|@uAn@w@pGYhFUzDHfDjAnD|AjLtEfE~Az@X~@TzB_CfBw@FQKg@KgAIoDMi@", dist: 25.3, dur: 345, ascent: 203,
+                poly: "k{c}EesbsYRbA@dBBpATlA^xAFP@X@RDDd@Xd@Nb@Fz@BzBDhDLjAFhCXnANx@BZFb@Jr@b@fB|@zHfErClAfBp@LBn@\\H@Va@Pc@DIHFnBvAt@^bB^z@\\rF`Dz@`@`@BlAIb@LjAf@n@`@r@r@TRRJRFTBz@Cj@K^Ql@a@Za@Ng@Ho@Hi@D@p@Rv@PR@rARtDf@`El@pATlAPlAVd@N\\Rr@j@^b@l@jAXv@VlA~@dF`AvFdAjG@FE@G@OAUMTLN@FADA@HTnAT~@h@bBt@bBlApBlAxAfA`ApA~@XTz@l@~@p@|EbDvR`NlFvDqAjMK|A?RBj@Pz@Vf@nCzCL?zAh@x@\\fBd@v@VZN\\TnDpB~@b@`FbABBd@[J|@?Hm@|F?PHBBDBT@FP?pFDAbB`A@eBAyECCeBAGiBC_GCgEC{AKaAOe@Q_@OYp@g@nAoAtCQZGIQTg@`@a@`@eA~@_BzAcAfAeA`AiCdCkCvCuAtA]ZUP[Pi@f@_A`AsAtAc@^KNAFO?[@}B?o@BeCNuBNa@DSCYH_ALgBRkAJsDVgBHy@@iDCmGAw@E]EmCg@yAUeBCuBDcAAsAKgAGu@AyCH}CLqAPw@RaCl@kDp@{@JuCD_CF_B@cECq@GuAYwAW}AYKCQC@IHa@DWMv@CLaAOmAQ_BGaEMaCHuBJc@C_@IuAc@wDoAsA]kCa@q@Qy@k@c@YGCCKc@w@aAcAa@i@KIy@O[Ie@QQAG@m@Aq@AQAYg@a@J[F[F[Fi@Gk@Ig@QIC?k@?{AAe@CCo@Km@G]So@Y{@[[G_@C[@]C[IWB[LSBUAS@o@Ta@Vg@X[XSHK?_@QcB{@SGg@AU@K?CUE_@Ms@{@gESiAEu@@k@PqCl@eHRoBPy@^qAHa@XeDDm@As@CWKg@s@gCK_@Ec@KmBUyEKcAIm@E}@IeAYcCWsAu@aCUg@a@uAq@aBYg@]a@_Au@WOSYg@y@u@}BOq@UuAa@{COk@Ui@_BeCq@yAcAmDwAwD_B}DKWCKVS~@u@\\Y\\YPUj@oAb@qAj@eAp@_Ap@cAZYDWFK|BcCdB_BxA}@^QFCFHLLLLd@\\h@Zr@TbALr@AhAQv@UpAe@RCZQd@Or@[jDmAbBk@`AUp@Kh@IdBKpAG~DMhDIr@?nBOd@?\\F^LDQ@]?[C_@KgB`A[h@U@M?y@DcAJw@FYf@Pb@Pb@LbA^JDFCb@c@x@{@j@i@r@[d@QJECKKg@Ie@CqAAeBScA", dist: 16.2, dur: 221, ascent: 165,
                 color: "#f59e0b", name: "Sano Loop (Real)",
-                elevations: [94,94,91,91,91,88,85,85,85,84,81,80,80,78,76,74,75,72,75,73,72,70,70,68,67,66,66,66,66,65,64,62,62,60,59,60,62,63,65,66,67,67,69,70,72,72,75,76,77,79,80,82,84,85,85,86,87,89,90,91,91,93,96,96,97,99,110,108,108,113,118,121,130,140,192,149,140,135,126,119,114,108,107,105,107,110,110,114,115,116,118,119,120,121,123,125,130,129,132,135,139,140,145,153,156,155,155,159,163,163,160,156,155,157,155,148,143,140,137,133,131,130,126,126,126,122,122,121,118,117,115,114,114,111,109,107,107,107,105,104,102,102,103,99,97,95,95,94,93,94], markers: [{"lat":36.397506,"lng":139.610264,"name":"葛生駅"},{"lat":36.375833,"lng":139.596944,"name":"多田駅"},{"lat":36.360556,"lng":139.580278,"name":"田沼駅"},{"query":"栃木県佐野市戸室町1054","name":"JA佐野 三好支店","lat":36.3930594,"lng":139.574131},{"query":"栃木県佐野市仙波町 鈴庵","name":"鈴庵","lat":36.4523147,"lng":139.5942198}]
+                elevations: [94,95,94,91,91,91,91,90,87,85,85,85,85,85,84,83,81,81,79,80,79,77,76,75,74,75,75,74,75,74,73,72,71,70,70,70,68,66,67,66,66,65,65,66,66,65,65,64,63,62,62,61,59,59,59,61,62,62,64,65,65,66,67,67,67,68,69,70,70,72,72,74,74,75,76,77,78,79,80,81,83,84,83,85,86,86,86,87,89,88,89,89,90,91,91,92,94,96,96,98,97,97,102,108,105,108,107,111,113,118,117,121,127,134,140,193,177,150,144,138,136,130,126,119,118,114,109,108,106,114,107,103,104,106,103,102,101,101,101,98,99,98,99,94,93,94,95,93,95,94], markers: [{"lat":36.397506,"lng":139.610264,"name":"葛生駅"},{"lat":36.375833,"lng":139.596944,"name":"多田駅"},{"lat":36.360556,"lng":139.580278,"name":"田沼駅"},{"query":"栃木県佐野市戸室町1054","name":"JA佐野 三好支店","lat":36.3930594,"lng":139.574131}]
             }
         };
 
@@ -139,7 +137,7 @@
         }
 
         let map, currentLayer, markerGroup, kmGroup, chartInstance;
-        let currentMode = 'yoko'; // 'yoko' or 'sano'
+        let currentMode = 'yoko';
 
         function init() {
             map = L.map('map', { zoomControl: false }).setView([35.455, 139.63], 13);
@@ -240,17 +238,20 @@
             document.getElementById('l-name').innerText = d.name;
             document.getElementById('l-name').style.color = d.color;
 
-            // Button active state
-            const allIds = ['5', '10', '20', '30', 'sanoY', 'sanoR'];
+            // Update button styles
+            const allIds = ['5', '10', '20', '30', 'sano_y', 'sano_r'];
             const btnIdMap = { '5':'b5', '10':'b10', '20':'b20', '30':'b30', 'sano_y':'bsanoY', 'sano_r':'bsanoR' };
             
             Object.values(btnIdMap).forEach(bid => {
                 const el = document.getElementById(bid);
-                if(el) el.classList.replace('active-5', 'inactive');
-                if(el) el.classList.replace('active-10', 'inactive');
-                if(el) el.classList.replace('active-20', 'inactive');
-                if(el) el.classList.replace('active-30', 'inactive');
-                if(el) el.classList.replace('active-sano', 'inactive');
+                if(el) {
+                    // Reset to inactive based on its type
+                    if(el.classList.contains('active-5')) el.classList.replace('active-5', 'inactive');
+                    if(el.classList.contains('active-10')) el.classList.replace('active-10', 'inactive');
+                    if(el.classList.contains('active-20')) el.classList.replace('active-20', 'inactive');
+                    if(el.classList.contains('active-30')) el.classList.replace('active-30', 'inactive');
+                    if(el.classList.contains('active-sano')) el.classList.replace('active-sano', 'inactive');
+                }
             });
 
             const activeBtn = document.getElementById(btnIdMap[id]);
