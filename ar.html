@@ -3,65 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AR床認識 冷蔵庫設置</title>
+    <title>AR 設置シミュレーター (Debug版)</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    <style>
+        body { margin: 0; background: #222; font-family: sans-serif; }
+        #status {
+            position: fixed; top: 10px; left: 10px; right: 10px;
+            padding: 10px; background: rgba(0,0,0,0.7);
+            color: #00ff00; font-size: 12px; z-index: 1000;
+            border-radius: 5px; pointer-events: none;
+        }
+        .ar-button {
+            position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%);
+            padding: 15px 30px; background: #ff6600; color: white;
+            border: none; border-radius: 30px; font-weight: bold; font-size: 18px;
+            display: none; /* モデルができるまで隠す */
+        }
+    </style>
 </head>
-<body style="margin: 0; background: #222;">
+<body>
+
+    <div id="status">システム起動中...</div>
 
     <model-viewer 
-        id="fridge-viewer"
-        camera-controls 
-        ar 
-        ar-modes="webxr quick-look" 
-        ar-scale="fixed"
-        ar-placement="floor"
+        id="viewer"
+        camera-controls ar ar-modes="webxr quick-look" 
+        ar-scale="fixed" ar-placement="floor"
         shadow-intensity="1" 
         style="width: 100vw; height: 100vh;">
-        
-        <button slot="ar-button" style="position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%); padding: 15px 30px; background: #ff6600; color: white; border: none; border-radius: 30px; font-weight: bold; font-size: 18px; z-index: 100;">
-            📱 床を認識して配置
-        </button>
-
-        <div id="loading-msg" style="color: white; text-align: center; padding-top: 50vh;">
-            3Dモデルを生成中...
-        </div>
+        <button slot="ar-button" id="ar-btn" class="ar-button">📱 床に配置する</button>
     </model-viewer>
 
     <script type="module">
-        import * as THREE from 'https://cdn.skypack.dev/three@0.150.1';
-        import { GLTFExporter } from 'https://cdn.skypack.dev/three@0.150.1/examples/jsm/exporters/GLTFExporter.js';
+        import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.module.js';
+        import { GLTFExporter } from 'https://cdn.jsdelivr.net/npm/three@0.150.1/examples/jsm/exporters/GLTFExporter.js';
 
-        async function createFridgeModel() {
-            const scene = new THREE.Scene();
+        const status = document.getElementById('status');
+        const arBtn = document.getElementById('ar-btn');
 
-            // 冷蔵庫1台のサイズ (幅0.62, 高さ1.98, 奥行0.62)
-            const geometry = new THREE.BoxGeometry(0.62, 1.98, 0.62);
-            const material = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5 });
+        async function init() {
+            try {
+                status.innerText = "3Dモデルを作成中...";
+                const scene = new THREE.Scene();
 
-            // 2つの立方体を10cm離して配置
-            // 中心からそれぞれ (幅0.62/2 + 隙間0.1/2) = 0.36m ずつずらす
-            const leftFridge = new THREE.Mesh(geometry, material);
-            leftFridge.position.set(-0.36, 1.98 / 2, 0); // 底を接地させるため高さ半分上げる
-            scene.add(leftFridge);
+                // 冷蔵庫2台の作成
+                const geometry = new THREE.BoxGeometry(0.62, 1.98, 0.62);
+                const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
 
-            const rightFridge = new THREE.Mesh(geometry, material);
-            rightFridge.position.set(0.36, 1.98 / 2, 0);
-            scene.add(rightFridge);
+                const left = new THREE.Mesh(geometry, material);
+                left.position.set(-0.36, 1.98 / 2, 0);
+                scene.add(left);
 
-            // GLB形式に変換
-            const exporter = new GLTFExporter();
-            exporter.parse(scene, (result) => {
-                const blob = new Blob([JSON.stringify(result)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
+                const right = new THREE.Mesh(geometry, material);
+                right.position.set(0.36, 1.98 / 2, 0);
+                scene.add(right);
+
+                status.innerText = "AR形式に変換中...";
+                const exporter = new GLTFExporter();
                 
-                // model-viewerに生成したモデルをセット
-                const viewer = document.getElementById('fridge-viewer');
-                viewer.src = url;
-                document.getElementById('loading-msg').style.display = 'none';
-            }, { binary: false });
+                // GLB形式で書き出し
+                exporter.parse(scene, (result) => {
+                    const blob = new Blob([result], { type: 'application/octet-stream' });
+                    const url = URL.createObjectURL(blob);
+                    
+                    const viewer = document.getElementById('viewer');
+                    viewer.src = url;
+                    
+                    status.innerText = "準備完了！ボタンを押してください。";
+                    arBtn.style.display = "block";
+                }, 
+                (error) => {
+                    status.innerText = "変換エラー: " + error;
+                },
+                { binary: true }); // iPhoneと相性の良いバイナリモード
+
+            } catch (e) {
+                status.innerText = "起動エラー: " + e.message;
+                console.error(e);
+            }
         }
 
-        createFridgeModel();
+        init();
     </script>
 </body>
 </html>
