@@ -1,49 +1,75 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>冷蔵庫 AR設置シミュレーション（iPhone対応版）</title>
-  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>AR 2連冷蔵庫シミュレーター</title>
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+  
   <style>
-    body { margin: 0; background-color: #333; }
-    model-viewer {
-      width: 100vw;
-      height: 100vh;
+    body { margin: 0; overflow: hidden; font-family: sans-serif; }
+    #overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8); color: white;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      z-index: 9999;
     }
-    /* AR起動ボタンのデザイン */
-    .ar-button {
-      position: absolute;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #ff6600;
-      color: white;
-      padding: 16px 32px;
-      border-radius: 30px;
-      border: none;
-      font-size: 18px;
-      font-weight: bold;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      cursor: pointer;
+    button {
+      padding: 15px 30px; font-size: 18px; font-weight: bold;
+      background: #ff6600; color: white; border: none; border-radius: 50px;
     }
+    .info { margin-top: 20px; text-align: center; font-size: 14px; line-height: 1.6; }
   </style>
 </head>
+
 <body>
 
-  <model-viewer 
-    src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Box/glTF-Binary/Box.glb" 
-    ar 
-    ar-modes="quick-look webxr" 
-    ar-scale="fixed"
-    camera-controls 
-    scale="1.69 1.98 0.62"
-    alt="冷蔵庫のダミーボックス">
-    
-    <button slot="ar-button" class="ar-button">
-      📱 床を認識して配置する
-    </button>
-  </model-viewer>
+  <div id="overlay">
+    <button onclick="startAR()">ARを開始する</button>
+    <div class="info">
+      高さ 198cm / 幅 62cm / 奥行 62cm<br>
+      2台を 10cm 間隔で配置しています
+    </div>
+  </div>
 
+  <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
+    
+    <a-entity id="fridge-group" position="0 0 -2">
+      <a-box 
+        position="-0.36 0.99 0" 
+        width="0.62" height="1.98" depth="0.62" 
+        material="color: #ffffff; opacity: 0.9; metalness: 0.3;">
+      </a-box>
+
+      <a-box 
+        position="0.36 0.99 0" 
+        width="0.62" height="1.98" depth="0.62" 
+        material="color: #ffffff; opacity: 0.9; metalness: 0.3;">
+      </a-box>
+    </a-entity>
+
+    <a-camera position="0 1.6 0"></a-camera>
+  </a-scene>
+
+  <script>
+    function startAR() {
+      // ボタンを押したらオーバーレイを消す
+      document.getElementById('overlay').style.display = 'none';
+      
+      // iOS向けのカメラ使用許可プロンプトをトリガーするため、シーンを初期化
+      const scene = document.querySelector('a-scene');
+      if (scene.hasLoaded) {
+        setupCamera();
+      } else {
+        scene.addEventListener('loaded', setupCamera);
+      }
+    }
+
+    function setupCamera() {
+      // AR.jsのカメラ初期化補助
+      console.log("AR Scene Loaded");
+    }
+  </script>
 </body>
 </html>
