@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>冷蔵庫ARモデル ジェネレーター</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 50px; background: #f0f0f0; }
+        .box { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: inline-block; }
+        button { padding: 15px 30px; font-size: 18px; font-weight: bold; background: #ff6600; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 10px; }
+        button:hover { background: #e65c00; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>📦 冷蔵庫ARモデル (.usdz) 作成ツール</h2>
+        <p>幅 1.34m (2台分) × 高さ 1.98m × 奥行 0.62m の白い箱を生成します</p>
+        <button id="download-btn">USDZファイルをダウンロード</button>
+        <p id="status"></p>
+    </div>
+
+    <script type="module">
+        import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.module.js';
+        import { USDZExporter } from 'https://cdn.jsdelivr.net/npm/three@0.150.1/examples/jsm/exporters/USDZExporter.js';
+
+        document.getElementById('download-btn').addEventListener('click', async () => {
+            const status = document.getElementById('status');
+            status.innerText = "生成中...";
+
+            try {
+                // シーンと冷蔵庫の作成
+                const scene = new THREE.Scene();
+                // 2台並んだ幅(1.34m)の1つの大きな箱を作る
+                const geometry = new THREE.BoxGeometry(1.34, 1.98, 0.62);
+                const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
+                const box = new THREE.Mesh(geometry, material);
+                // 底面を接地させるための位置調整
+                box.position.y = 1.98 / 2;
+                scene.add(box);
+
+                // USDZ形式で書き出し
+                const exporter = new USDZExporter();
+                const arraybuffer = await exporter.parse(box);
+                const blob = new Blob([arraybuffer], { type: 'model/vnd.usdz+zip' });
+                const url = URL.createObjectURL(blob);
+
+                // ダウンロード処理
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'fridge_model.usdz';
+                link.click();
+                
+                status.innerText = "✅ ダウンロード完了！（fridge_model.usdz）";
+            } catch (error) {
+                status.innerText = "エラーが発生しました: " + error.message;
+            }
+        });
+    </script>
+</body>
+</html>
