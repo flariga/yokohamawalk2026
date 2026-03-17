@@ -1,45 +1,31 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AR冷蔵庫シミュレーター</title>
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
-    <style>
-        body { margin: 0; background: #222; font-family: sans-serif; }
-        .controls {
-            position: fixed; top: 10px; left: 10px; right: 10px;
-            padding: 15px; background: rgba(255,255,255,0.9);
-            border-radius: 10px; z-index: 1000; font-size: 14px;
-        }
-        .ar-button {
-            position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%);
-            padding: 15px 30px; background: #ff6600; color: white;
-            border: none; border-radius: 30px; font-weight: bold; font-size: 18px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iOS AR動作テスト</title>
+  <style>
+    body { 
+      margin: 0; background: #222; height: 100vh; 
+      display: flex; flex-direction: column; justify-content: center; align-items: center; 
+    }
+    .ar-btn {
+      padding: 15px 30px; background: #ff6600; color: white; 
+      text-decoration: none; border-radius: 30px; font-weight: bold; font-size: 18px;
+    }
+    .note { color: #fff; margin-top: 20px; font-size: 14px; text-align: center; }
+  </style>
 </head>
 <body>
 
-    <div class="controls">
-        <strong>【設定サイズ】</strong><br>
-        1台：幅62cm × 高さ198cm × 奥行62cm<br>
-        （2台が10cm間隔で並んでいます）
-    </div>
+  <a rel="ar" href="https://developer.apple.com/augmented-reality/quick-look/models/cupandsaucer/cup_saucer_set.usdz" class="ar-btn">
+    📱 ARテスト（カメラ起動確認）
+  </a>
 
-    <model-viewer 
-        id="viewer"
-        src="https://modelviewer.dev/shared-assets/models/glTF-Sample-Assets/Models/Box/glTF-Binary/Box.glb" 
-        ar ar-modes="quick-look webxr" 
-        ar-scale="fixed" ar-placement="floor"
-        camera-controls shadow-intensity="1"
-        scale="1.34 1.98 0.62"
-        style="width: 100vw; height: 100vh;">
-        
-        <button slot="ar-button" class="ar-button">
-            📱 床を認識して配置する
-        </button>
-    </model-viewer>
+  <div class="note">
+    ※Apple公式のサンプルデータ（ティーカップ）が表示されます。<br>
+    これでカメラが起動すれば、iPhoneの設定は正常です。
+  </div>
 
 </body>
 </html>
